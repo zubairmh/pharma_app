@@ -37,6 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.6
   provider: ^6.1.2
   geolocator: ^11.0.0
+  flutter_hooks: ^0.20.5
+  http: ^1.2.1
+  shared_preferences: ^2.2.3
+  url_launcher: ^6.2.6
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:pharma_app/components/navbar.dart";
-import "package:pharma_app/components/state.dart";
+import "package:pharma_app/components/cart_state.dart";
 import "package:provider/provider.dart";
 
 class SearchPage extends StatefulWidget {
@@ -12,7 +12,31 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> medications = ["Dolo", "Paracetamol", "Viagra"];
+  List<String> medications = [
+    "Dolo",
+    "Vicks",
+    "Aspirin",
+    "Paracetamol",
+    "Ibuprofen",
+    "Amoxicillin",
+    "Ciprofloxacin",
+    "Omeprazole",
+    "Metformin",
+    "Simvastatin",
+    "Lisinopril",
+    "Levothyroxine",
+    "Atorvastatin",
+    "Azithromycin",
+    "Prednisone",
+    "Albuterol",
+    "Doxycycline",
+    "Fluoxetine",
+    "Losartan",
+    "Warfarin",
+    "Ranitidine",
+    "Pantoprazole"
+  ];
+
   List<String> filteredMedications = [];
 
   @override
