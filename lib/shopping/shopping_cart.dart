@@ -4,6 +4,7 @@ import 'package:pharma_app/components/api_state.dart';
 import 'package:pharma_app/components/navbar.dart';
 import 'package:pharma_app/components/cart_state.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -82,6 +83,7 @@ class CartPage extends StatelessWidget {
                       return StoreCard(
                           storeName: element['fullname'],
                           items: element['items'],
+                          phone: element['phone'] ?? "",
                           selectedItems: globalState.quantities);
                     },
                   );
@@ -122,19 +124,22 @@ class MedicationItem extends StatelessWidget {
 class StoreCard extends StatelessWidget {
   final String storeName;
   final List<dynamic> items;
-
+  final String phone;
   final Map<String, int> selectedItems;
 
   const StoreCard({
     required this.storeName,
     required this.items,
     required this.selectedItems,
+    required this.phone,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return InkWell(
+      onTap: (){launchUrl(Uri.parse('tel:$phone'));},
+        child: Card(
       child: Column(
         children: [
           ListTile(
@@ -164,7 +169,7 @@ class StoreCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   String calculateTotalPrice(

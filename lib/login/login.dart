@@ -13,7 +13,7 @@ class AccountPage extends StatelessWidget {
     final loginState = Provider.of<LoginState>(context);
     final globalState = Provider.of<HomeState>(context);
     return ListView(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(60),
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
