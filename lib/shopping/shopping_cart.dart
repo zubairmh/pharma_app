@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/rendering.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pharma_app/components/api_state.dart';
+import 'package:pharma_app/components/location_state.dart';
 import 'package:pharma_app/components/navbar.dart';
 import 'package:pharma_app/components/cart_state.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +86,9 @@ class CartPage extends StatelessWidget {
                           storeName: element['fullname'],
                           items: element['items'],
                           phone: element['phone'] ?? "",
-                          selectedItems: globalState.quantities);
+                          selectedItems: globalState.quantities,
+                          lat: element['lat'],
+                          long: element['long']);
                     },
                   );
                 }
@@ -126,55 +130,92 @@ class StoreCard extends StatelessWidget {
   final List<dynamic> items;
   final String phone;
   final Map<String, int> selectedItems;
+  final double lat;
+  final double long;
 
   const StoreCard({
     required this.storeName,
     required this.items,
     required this.selectedItems,
     required this.phone,
+    required this.lat,
+    required this.long,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final globalState = Provider.of<LocationModel>(context);
     return InkWell(
-      onTap: (){launchUrl(Uri.parse('tel:$phone'));},
+        onTap: () {
+          launchUrl(Uri.parse('tel:$phone'));
+        },
         child: Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(storeName),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: selectedItems.length,
-            itemBuilder: (context, index) {
-              final itemName = selectedItems.keys.elementAt(index);
-              int? itemQuantity = selectedItems[itemName];
-              int? itemPrice = items.firstWhere((element) =>
-                  element['name'] == itemName.toLowerCase())['price'];
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(storeName),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: selectedItems.length,
+                itemBuilder: (context, index) {
+                  final itemName = selectedItems.keys.elementAt(index);
+                  int? itemQuantity = selectedItems[itemName];
+                  int? itemPrice = items.firstWhere((element) =>
+                      element['name'] == itemName.toLowerCase())['price'];
 
-              return ListTile(
-                leading: Text(itemName),
-                title: Text('Quantity: $itemQuantity'),
-                subtitle: Text('Price: ${itemQuantity! * itemPrice!}'),
-              );
-            },
+                  return ListTile(
+                    leading: Text(itemName),
+                    titleTextStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16),
+                    title: Text('Quantity: $itemQuantity'),
+                    subtitle: Text('Price: ${itemQuantity! * itemPrice!}'),
+                  );
+                },
+              ),
+              const Divider(),
+              ListTile(
+                  title: const Text('Total Price'),
+                  subtitle: Text(calculateTotalPrice(selectedItems, items),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16))),
+              const Divider(),
+              ListTile(
+                  title: const Text('Total Distance'),
+                  subtitle: Text(
+                      "${(Geolocator.distanceBetween(globalState.latitude, globalState.longitude, lat, long)/ 1000).toStringAsFixed(2)} KM",
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16))),
+            ],
           ),
-          const Divider(),
-          ListTile(
-            title: const Text('Total Price'),
-            subtitle: Text(calculateTotalPrice(selectedItems, items)),
-          ),
-        ],
-      ),
-    ));
+        ));
+  }
+
+  String calculateTotalDistance(
+      Map<String, int> selectedItems, List<dynamic> items) {
+    int totalDistance = 0;
+    print(selectedItems);
+    return "5 KM";
+    // selectedItems.forEach((itemName, itemQuantity) {
+    //   int itemDistance = items.firstWhere(
+    //       (element) => element['name'] == itemName.toLowerCase())['distance'];
+    //   totalDistance += itemQuantity * itemDistance;
+    // });
+    return totalDistance.toString();
   }
 
   String calculateTotalPrice(
       Map<String, int> selectedItems, List<dynamic> items) {
     int totalPrice = 0;
+    print(items);
     selectedItems.forEach((itemName, itemQuantity) {
       int itemPrice = items.firstWhere(
           (element) => element['name'] == itemName.toLowerCase())['price'];

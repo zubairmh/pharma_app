@@ -34,7 +34,8 @@ class _SearchPageState extends State<SearchPage> {
     "Losartan",
     "Warfarin",
     "Ranitidine",
-    "Pantoprazole"
+    "Pantoprazole",
+    "Flucold"
   ];
 
   List<String> filteredMedications = [];
